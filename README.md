@@ -1,50 +1,69 @@
-## Example Summary
+# TI-Based Intelligent Spectrum Analysis and Programmable Waveform Generation System
+基于 TI MSPM0G3507 单片机的智能频谱分析与可编程波形生成系统，实现**可编程波形输出、实时信号采集、FFT频谱分析、掉电存储、可视化交互**全流程功能。
 
-The following example configures ADC0 to be triggered by a TimerG instance 1s
-after the timer has been started. The TimerG event is published on channel 1.
 
-## Peripherals & Pin Assignments
+## 项目简介
+本项目基于 TI MSPM0G3507 单片机开发，集成多波形 DAC 输出、ADC 信号采集、FFT 频谱分析、FLASH 数据存储、OLED 可视化、按键交互与蜂鸣器反馈功能，可完成波形可编程输出、信号实时采集、频谱分析、数据掉电存储与界面交互。
 
-| Peripheral | Pin | Function |
-| --- | --- | --- |
-| SYSCTL |  |  |
-| TIMG0 |  |  |
-| ADC0 | PA25 | ADC12 Channel 2 Pin |
-| EVENT |  |  |
-| DEBUGSS | PA20 | Debug Clock |
-| DEBUGSS | PA19 | Debug Data In Out |
+## 硬件平台
+- 主控：TI MSPM0G3507 (ARM Cortex-M0+)
+- 外设：OLED 显示屏、NOR FLASH、按键模块、蜂鸣器、DAC/ADC 模拟电路
+- 接口：I2C、SPI、UART、ADC、DAC、PWM
 
-## BoosterPacks, Board Resources & Jumper Settings
+## 核心功能
+1. **多波形 DAC 生成**
+   - 支持三角波、方波可编程输出
+   - 频率：500~5000Hz（步长 ±500Hz）
+   - 幅度：500~2000mV（步长 ±100mV）
+   - 占空比：10%~90%（步长 ±10%）
 
-Visit [LP_MSPM0G3507](https://www.ti.com/tool/LP-MSPM0G3507) for LaunchPad information, including user guide and hardware files.
+2. **ADC 数据采集**
+   - 12 位精度，10kHz 采样率
+   - 256 点缓存，定时器硬件触发
+   - 无丢失数据采集
 
-| Pin | Peripheral | Function | LaunchPad Pin | LaunchPad Settings |
-| --- | --- | --- | --- | --- |
-| PA25 | ADC0 | A2 | J1_2 | N/A |
-| PA20 | DEBUGSS | SWCLK | N/A | <ul><li>PA20 is used by SWD during debugging<br><ul><li>`J101 15:16 ON` Connect to XDS-110 SWCLK while debugging<br><li>`J101 15:16 OFF` Disconnect from XDS-110 SWCLK if using pin in application</ul></ul> |
-| PA19 | DEBUGSS | SWDIO | N/A | <ul><li>PA19 is used by SWD during debugging<br><ul><li>`J101 13:14 ON` Connect to XDS-110 SWDIO while debugging<br><li>`J101 13:14 OFF` Disconnect from XDS-110 SWDIO if using pin in application</ul></ul> |
+3. **FFT 频谱分析**
+   - 256 点 FFT 运算（CMSIS-DSP 库）
+   - 实时计算主频、时域幅值
+   - OLED 频谱柱状图显示
 
-### Device Migration Recommendations
-This project was developed for a superset device included in the LP_MSPM0G3507 LaunchPad. Please
-visit the [CCS User's Guide](https://software-dl.ti.com/msp430/esd/MSPM0-SDK/latest/docs/english/tools/ccs_ide_guide/doc_guide/doc_guide-srcs/ccs_ide_guide.html#sysconfig-project-migration)
-for information about migrating to other MSPM0 devices.
+4. **数据存储**
+   - RAM 实时输出模式
+   - FLASH 掉电存储模式
+   - 数据写入+读取校验
 
-### Low-Power Recommendations
-TI recommends to terminate unused pins by setting the corresponding functions to
-GPIO and configure the pins to output low or input with internal
-pullup/pulldown resistor.
+5. **可视化与交互**
+   - OLED 双模式：数值显示 / 频谱图显示
+   - 5 按键参数调节、模式切换
+   - 蜂鸣器按键操作反馈
 
-SysConfig allows developers to easily configure unused pins by selecting **Board**→**Configure Unused Pins**.
+## 工程结构
+├── /src # 主程序与驱动源码
 
-For more information about jumper configuration to achieve low-power using the
-MSPM0 LaunchPad, please visit the [LP-MSPM0G3507 User's Guide](https://www.ti.com/lit/slau873).
+├── /include # 头文件
 
-## Example Usage
-Provide a valid voltage to A0_2 (Voltage source for ADC is excepted to be
-between 0V and MCU supply voltage). Compile, load and run the example. The
-example will hit the breakpoint after the ADC conversion is done automatically.
-Once it hits the break point gADCResult array can be inspected.
+├── /Debug # 编译输出（.gitignore 忽略）
 
-On powerup, the ADC pin(s) used in this example are by default set to
-the correct analog mode. Therefore, calls to
-DL_GPIO_initPeripheralAnalogFunction for pinmuxing those pins are not needed.
+├── README.md # 项目说明
+
+└── .gitignore # Git 忽略配置
+
+## 开发环境
+- IDE：Code Composer Studio (CCS)
+- 库：TI MSPM0 DriverLib、CMSIS-DSP
+- 采样率：10kHz
+- 波形更新率：100kHz
+
+## 按键功能
+- B1：切换 RAM/FLASH 存储模式
+- B2：切换三角波/方波
+- B3：切换调节项（频率/幅度/占空比）
+- B4/B5：参数+ / 参数-
+- 独立按键：切换 OLED 显示模式
+
+## 演示效果
+- OLED 实时显示频率、幅值、存储模式、波形类型
+- FFT 频谱图直观展示 0~5kHz 信号分布
+- UART 输出原始采集数据与分析结果
+- FLASH 掉电数据保存与读取验证
+
