@@ -66,4 +66,5 @@
 - FFT 频谱图直观展示 0~5kHz 信号分布
 - UART 输出原始采集数据与分析结果
 - FLASH 掉电数据保存与读取验证
-
+见b站视频
+https://www.bilibili.com/video/BV1dJXVBhEb6/
